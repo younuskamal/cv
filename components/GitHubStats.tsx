@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Github, TrendingUp } from 'lucide-react';
 
 interface GitHubStatsProps {
@@ -27,12 +27,38 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
         activity: defaultActivity
     });
     const [loading, setLoading] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
+    const sectionRef = useRef<HTMLElement>(null);
+
+    // Intersection Observer
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                }
+            },
+            { threshold: 0.2 }
+        );
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+
+        return () => {
+            if (sectionRef.current) {
+                observer.unobserve(sectionRef.current);
+            }
+        };
+    }, []);
 
     // Animated counter hook
     const useAnimatedCounter = (end: number, duration: number = 2000) => {
         const [count, setCount] = useState(0);
 
         useEffect(() => {
+            if (!isVisible || end === 0) return;
+
             let startTime: number;
             let animationFrame: number;
 
@@ -49,7 +75,7 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
 
             animationFrame = requestAnimationFrame(animate);
             return () => cancelAnimationFrame(animationFrame);
-        }, [end, duration]);
+        }, [end, duration, isVisible]);
 
         return count;
     };
@@ -101,7 +127,7 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
     const maxActivity = stats.activity.length > 0 ? Math.max(...stats.activity) : 1;
 
     return (
-        <section className="mb-8 animate-fade-in-up animation-delay-400">
+        <section ref={sectionRef} className="mb-8 animate-fade-in-up animation-delay-400">
             <div className="flex items-center justify-between mb-6 px-2">
                 <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-slate-900 text-white shadow-sm'}`}>

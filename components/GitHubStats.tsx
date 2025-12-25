@@ -66,19 +66,12 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
     }, [username, isPdfMode]);
 
     if (isPdfMode) return null;
-    if (loading) {
-        return (
-            <section className="mb-8">
-                <div className={`p-8 rounded-3xl ${isDarkMode ? 'bg-slate-900/60' : 'bg-white/70'} backdrop-blur-xl border ${isDarkMode ? 'border-slate-700/50' : 'border-white/50'} animate-pulse`}>
-                    <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-48 mb-6"></div>
-                    <div className="h-32 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                </div>
-            </section>
-        );
-    }
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const maxActivity = stats.activity.length > 0 ? Math.max(...stats.activity) : 1;
+
+    // Debug log
+    console.log('GitHub Stats Activity:', stats.activity, 'Max:', maxActivity);
 
     return (
         <section className="mb-8 animate-fade-in-up animation-delay-400">
@@ -153,7 +146,10 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
                                                     ? 'bg-gradient-to-t from-emerald-500 to-emerald-300'
                                                     : 'bg-gradient-to-t from-blue-500 to-blue-300'
                                                 } hover:scale-105 hover:shadow-lg cursor-pointer`}
-                                            style={{ height: `${height}%` }}
+                                            style={{
+                                                height: `${Math.max(height, 10)}%`,
+                                                minHeight: '8px'
+                                            }}
                                         >
                                             {/* Tooltip */}
                                             <div className={`absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 rounded text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-slate-900 text-white'}`}>

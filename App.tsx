@@ -20,6 +20,7 @@ import TechStack from './components/MainContent/TechStack';
 import ScrollToTop from './components/ScrollToTop';
 
 import BackgroundAnimation from './components/BackgroundAnimation';
+import InteractiveParticles from './components/InteractiveParticles';
 import QuickNav from './components/QuickNav';
 
 // Profile image path
@@ -186,6 +187,12 @@ const App: React.FC = () => {
       {!isPdfMode && (
         <div className="print:hidden">
           <BackgroundAnimation isDarkMode={isDarkMode} />
+        </div>
+      )}
+
+      {!isPdfMode && (
+        <div className="print:hidden">
+          <InteractiveParticles isDarkMode={isDarkMode} />
         </div>
       )}
 

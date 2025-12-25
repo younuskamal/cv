@@ -19,7 +19,13 @@ interface Repository {
 
 const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMode }) => {
     // Initialize with default data to ensure chart always shows
-    const defaultActivity = Array(12).fill(0).map(() => Math.floor(Math.random() * 60));
+    // Generate realistic activity data (ensure last value is not 0)
+    const defaultActivity = Array(12).fill(0).map((_, i) => {
+        // Make recent months have higher activity
+        const baseValue = Math.floor(Math.random() * 50) + 10;
+        const recencyBonus = i > 8 ? Math.floor(Math.random() * 20) : 0;
+        return baseValue + recencyBonus;
+    });
     const [stats, setStats] = useState({
         repos: 0,
         followers: 0,
@@ -99,8 +105,12 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
 
                 const totalStars = reposData.reduce((acc, repo) => acc + repo.stargazers_count, 0);
 
-                // Generate activity data (last 12 months simulation based on repos)
-                const activityData = Array(12).fill(0).map(() => Math.floor(Math.random() * 60));
+                // Generate activity data (last 12 months simulation - ensure no zeros)
+                const activityData = Array(12).fill(0).map((_, i) => {
+                    const baseValue = Math.floor(Math.random() * 50) + 10;
+                    const recencyBonus = i > 8 ? Math.floor(Math.random() * 20) : 0;
+                    return baseValue + recencyBonus;
+                });
 
                 setStats({
                     repos: userData.public_repos,
@@ -202,12 +212,25 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
                             {/* Area under curve */}
                             <path
                                 d={(() => {
-                                    const points = stats.activity.map((count, i) => {
-                                        const x = (i * 600) / 11;
-                                        const y = 140 - ((count / maxActivity) * 120);
-                                        return `${x},${y}`;
-                                    });
-                                    return `M 0,140 L ${points.join(' L ')} L 600,140 Z`;
+                                    const points = stats.activity.map((count, i) => ({
+                                        x: (i * 600) / 11,
+                                        y: 140 - ((count / maxActivity) * 120)
+                                    }));
+
+                                    // Create smooth curve using cubic bezier
+                                    let path = `M 0,140 L ${points[0].x},${points[0].y}`;
+
+                                    for (let i = 0; i < points.length - 1; i++) {
+                                        const current = points[i];
+                                        const next = points[i + 1];
+                                        const controlPointX = (current.x + next.x) / 2;
+
+                                        path += ` Q ${controlPointX},${current.y} ${(current.x + next.x) / 2},${(current.y + next.y) / 2}`;
+                                        path += ` Q ${controlPointX},${next.y} ${next.x},${next.y}`;
+                                    }
+
+                                    path += ` L 600,140 Z`;
+                                    return path;
                                 })()}
                                 fill={isDarkMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.08)'}
                                 className="animate-[fadeIn_1s_ease-out]"
@@ -216,12 +239,24 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
                             {/* Line */}
                             <path
                                 d={(() => {
-                                    const points = stats.activity.map((count, i) => {
-                                        const x = (i * 600) / 11;
-                                        const y = 140 - ((count / maxActivity) * 120);
-                                        return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
-                                    }).join(' ');
-                                    return points;
+                                    const points = stats.activity.map((count, i) => ({
+                                        x: (i * 600) / 11,
+                                        y: 140 - ((count / maxActivity) * 120)
+                                    }));
+
+                                    // Create smooth curve using cubic bezier
+                                    let path = `M ${points[0].x},${points[0].y}`;
+
+                                    for (let i = 0; i < points.length - 1; i++) {
+                                        const current = points[i];
+                                        const next = points[i + 1];
+                                        const controlPointX = (current.x + next.x) / 2;
+
+                                        path += ` Q ${controlPointX},${current.y} ${(current.x + next.x) / 2},${(current.y + next.y) / 2}`;
+                                        path += ` Q ${controlPointX},${next.y} ${next.x},${next.y}`;
+                                    }
+
+                                    return path;
                                 })()}
                                 fill="none"
                                 stroke={isDarkMode ? 'rgb(59, 130, 246)' : 'rgb(37, 99, 235)'}

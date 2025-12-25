@@ -170,7 +170,7 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 👤 **Contact**
 
 **Younis Yasser Kamal**
-- 🌐 Website: [cv-younis.onrender.com](https://cv-younis.onrender.com)
+- 🌐 Website: [https://youns-kamal-cv.onrender.com](https://youns-kamal-cv.onrender.com)
 - 💼 GitHub: [@younuskamal](https://github.com/younuskamal)
 - 💬 WhatsApp: +90 552 732 40 29
 - 📧 Email: ynsysr2005@gmail.com

@@ -23,7 +23,7 @@ export const en: ResumeData = {
             technologies: ["React 19", "TypeScript", "NestJS", "TypeORM", "PostgreSQL", "i18next", "3D Dental Chart"],
             description: "Enterprise-grade SaaS platform for dental clinics featuring real-time appointment scheduling, interactive 3D dental charts (@react-three/fiber), patient records with HIPAA-compliant security, automated billing & invoicing, multi-language support (EN/AR/TR), and role-based access control (RBAC). Architected with offline-first approach and WebSocket for live notifications.",
             githubUrl: "https://github.com/younuskamal/smartclinic",
-            demoUrl: "https://smartclinic-demo.vercel.app"
+            demoUrl: "http://138.68.88.223"
         },
         {
             title: "SmartPoint POS - Offline-First Point of Sale",

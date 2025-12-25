@@ -19,7 +19,7 @@ interface Repository {
 
 const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMode }) => {
     // Initialize with default data to ensure chart always shows
-    const defaultActivity = Array(12).fill(0).map(() => Math.floor(Math.random() * 20) + 5);
+    const defaultActivity = Array(12).fill(0).map(() => Math.floor(Math.random() * 60));
     const [stats, setStats] = useState({
         repos: 0,
         followers: 0,
@@ -44,7 +44,7 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
                 const totalStars = reposData.reduce((acc, repo) => acc + repo.stargazers_count, 0);
 
                 // Generate activity data (last 12 months simulation based on repos)
-                const activityData = Array(12).fill(0).map(() => Math.floor(Math.random() * 20) + 5);
+                const activityData = Array(12).fill(0).map(() => Math.floor(Math.random() * 60));
 
                 setStats({
                     repos: userData.public_repos,
@@ -69,9 +69,6 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const maxActivity = stats.activity.length > 0 ? Math.max(...stats.activity) : 1;
-
-    // Debug log
-    console.log('GitHub Stats Activity:', stats.activity, 'Max:', maxActivity);
 
     return (
         <section className="mb-8 animate-fade-in-up animation-delay-400">
@@ -129,42 +126,154 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
                     <div className={`text-xs font-bold uppercase tracking-wider mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                         Monthly Contributions
                     </div>
-                    <div className="flex items-end justify-between gap-2 h-32">
-                        {stats.activity.map((count, index) => {
-                            const height = (count / maxActivity) * 100;
-                            const isHighActivity = count > maxActivity * 0.7;
 
-                            return (
-                                <div key={index} className="flex-1 flex flex-col items-center gap-2 group">
-                                    <div className="relative flex-1 w-full flex items-end">
-                                        <div
-                                            className={`w-full rounded-t-lg transition-all duration-500 ease-out ${isDarkMode
-                                                ? isHighActivity
-                                                    ? 'bg-gradient-to-t from-emerald-600 to-emerald-400'
-                                                    : 'bg-gradient-to-t from-blue-900 to-blue-700'
-                                                : isHighActivity
-                                                    ? 'bg-gradient-to-t from-emerald-500 to-emerald-300'
-                                                    : 'bg-gradient-to-t from-blue-500 to-blue-300'
-                                                } hover:scale-105 hover:shadow-lg cursor-pointer`}
+                    {/* Line Chart with SVG */}
+                    <div className="relative h-40">
+                        <svg className="w-full h-full" viewBox="0 0 600 160" preserveAspectRatio="none">
+                            {/* Grid lines */}
+                            {[0, 1, 2, 3, 4].map((i) => (
+                                <line
+                                    key={i}
+                                    x1="0"
+                                    y1={i * 40}
+                                    x2="600"
+                                    y2={i * 40}
+                                    stroke={isDarkMode ? 'rgba(100, 116, 139, 0.1)' : 'rgba(148, 163, 184, 0.15)'}
+                                    strokeWidth="1"
+                                />
+                            ))}
+
+                            {/* Area under curve */}
+                            <path
+                                d={(() => {
+                                    const points = stats.activity.map((count, i) => {
+                                        const x = (i * 600) / 11;
+                                        const y = 140 - ((count / maxActivity) * 120);
+                                        return `${x},${y}`;
+                                    });
+                                    return `M 0,140 L ${points.join(' L ')} L 600,140 Z`;
+                                })()}
+                                fill={isDarkMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.08)'}
+                                className="animate-[fadeIn_1s_ease-out]"
+                            />
+
+                            {/* Line */}
+                            <path
+                                d={(() => {
+                                    const points = stats.activity.map((count, i) => {
+                                        const x = (i * 600) / 11;
+                                        const y = 140 - ((count / maxActivity) * 120);
+                                        return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
+                                    }).join(' ');
+                                    return points;
+                                })()}
+                                fill="none"
+                                stroke={isDarkMode ? 'rgb(59, 130, 246)' : 'rgb(37, 99, 235)'}
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="animate-[drawLine_2s_ease-out]"
+                                style={{
+                                    filter: isDarkMode ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))' : 'drop-shadow(0 0 6px rgba(59, 130, 246, 0.3))'
+                                }}
+                            />
+
+                            {/* Data points */}
+                            {stats.activity.map((count, index) => {
+                                const x = (index * 600) / 11;
+                                const y = 140 - ((count / maxActivity) * 120);
+                                const isHigh = count > maxActivity * 0.7;
+
+                                return (
+                                    <g key={index} className="group cursor-pointer">
+                                        {/* Hover effect circle */}
+                                        <circle
+                                            cx={x}
+                                            cy={y}
+                                            r="12"
+                                            fill={isDarkMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)'}
+                                            className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                        />
+
+                                        {/* Main dot */}
+                                        <circle
+                                            cx={x}
+                                            cy={y}
+                                            r="4"
+                                            fill={isHigh
+                                                ? (isDarkMode ? 'rgb(52, 211, 153)' : 'rgb(16, 185, 129)')
+                                                : (isDarkMode ? 'rgb(96, 165, 250)' : 'rgb(59, 130, 246)')
+                                            }
+                                            className="transition-all duration-300 group-hover:r-6"
                                             style={{
-                                                height: `${Math.max(height, 10)}%`,
-                                                minHeight: '8px'
+                                                animation: `fadeIn 0.5s ease-out ${index * 0.1}s both`,
+                                                filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))'
                                             }}
-                                        >
-                                            {/* Tooltip */}
-                                            <div className={`absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 rounded text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-slate-900 text-white'}`}>
+                                        />
+
+                                        {/* Tooltip on hover */}
+                                        <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                            <rect
+                                                x={x - 35}
+                                                y={y - 45}
+                                                width="70"
+                                                height="30"
+                                                rx="6"
+                                                fill={isDarkMode ? 'rgb(15, 23, 42)' : 'rgb(30, 41, 59)'}
+                                                stroke={isDarkMode ? 'rgb(59, 130, 246)' : 'rgb(96, 165, 250)'}
+                                                strokeWidth="1.5"
+                                            />
+                                            <text
+                                                x={x}
+                                                y={y - 32}
+                                                textAnchor="middle"
+                                                fill="white"
+                                                fontSize="11"
+                                                fontWeight="bold"
+                                            >
                                                 {count} commits
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span className={`text-[10px] font-bold ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>
-                                        {months[index]}
-                                    </span>
-                                </div>
-                            );
-                        })}
+                                            </text>
+                                            <text
+                                                x={x}
+                                                y={y - 20}
+                                                textAnchor="middle"
+                                                fill={isDarkMode ? 'rgb(148, 163, 184)' : 'rgb(203, 213, 225)'}
+                                                fontSize="9"
+                                            >
+                                                {months[index]}
+                                            </text>
+                                        </g>
+                                    </g>
+                                );
+                            })}
+                        </svg>
+
+                        {/* Month labels below chart */}
+                        <div className="flex justify-between mt-2 px-1">
+                            {months.map((month, index) => (
+                                <span
+                                    key={index}
+                                    className={`text-[10px] font-bold ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}
+                                    style={{ width: '8.33%', textAlign: 'center' }}
+                                >
+                                    {month}
+                                </span>
+                            ))}
+                        </div>
                     </div>
                 </div>
+
+                {/* CSS Animations */}
+                <style>{`
+                    @keyframes drawLine {
+                        from { stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+                        to { stroke-dasharray: 1000; stroke-dashoffset: 0; }
+                    }
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: scale(0); }
+                        to { opacity: 1; transform: scale(1); }
+                    }
+                `}</style>
             </div>
         </section>
     );

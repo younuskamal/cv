@@ -10,7 +10,7 @@ interface ExperienceSectionProps {
 }
 
 const ExperienceSection: React.FC<ExperienceSectionProps> = ({ data, cardClass, isPdfMode, isDarkMode }) => {
-    const [expandedIndex, setExpandedIndex] = React.useState<number | null>(isPdfMode ? null : 0);
+    const [expandedIndex, setExpandedIndex] = React.useState<number | null>(null);
 
     const toggleExpand = (index: number) => {
         if (isPdfMode) return;

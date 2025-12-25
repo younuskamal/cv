@@ -10,7 +10,7 @@ interface ProjectsSectionProps {
 }
 
 const ProjectsSection: React.FC<ProjectsSectionProps> = ({ data, cardClass, isPdfMode, isDarkMode }) => {
-    const [expandedIndex, setExpandedIndex] = useState<number | null>(isPdfMode ? null : 0);
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
     const toggleExpand = (index: number) => {
         if (isPdfMode) return;

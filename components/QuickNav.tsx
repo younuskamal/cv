@@ -7,6 +7,9 @@ interface QuickNavProps {
 
 const QuickNav: React.FC<QuickNavProps> = ({ isDarkMode }) => {
     const [activeSection, setActiveSection] = useState('about');
+    const [isMobileNavHidden, setIsMobileNavHidden] = useState(false);
+    const [isMobileView, setIsMobileView] = useState(false);
+    const lastScrollY = React.useRef(0);
 
     const sections = [
         { id: 'about', icon: <User size={16} />, label: 'About' },
@@ -17,8 +20,31 @@ const QuickNav: React.FC<QuickNavProps> = ({ isDarkMode }) => {
     ];
 
     useEffect(() => {
+        const handleResize = () => {
+            setIsMobileView(window.innerWidth < 1280);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY + 300; // Offset
+            if (isMobileView) {
+                const currentY = window.scrollY;
+                if (currentY <= 100) {
+                    setIsMobileNavHidden(false);
+                } else if (currentY > lastScrollY.current + 10) {
+                    setIsMobileNavHidden(true);
+                } else if (currentY < lastScrollY.current - 10) {
+                    setIsMobileNavHidden(false);
+                }
+                lastScrollY.current = currentY;
+            } else {
+                setIsMobileNavHidden(false);
+            }
 
             for (const section of sections) {
                 const element = document.getElementById(section.id);
@@ -34,7 +60,7 @@ const QuickNav: React.FC<QuickNavProps> = ({ isDarkMode }) => {
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [isMobileView]);
 
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
@@ -75,7 +101,7 @@ const QuickNav: React.FC<QuickNavProps> = ({ isDarkMode }) => {
             </div>
 
             {/* Mobile/Tablet nav */}
-            <div className="xl:hidden fixed inset-x-0 bottom-5 z-40 px-4">
+            <div className={`xl:hidden fixed inset-x-0 bottom-5 z-40 px-4 transition-all duration-300 ${isMobileNavHidden ? 'translate-y-16 opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}>
                 <div className={`mx-auto w-full max-w-md rounded-full border shadow-2xl backdrop-blur-xl px-2.5 py-1.5 flex items-center justify-between gap-1 ${isDarkMode ? 'bg-slate-900/85 border-slate-800 text-slate-100' : 'bg-white/95 border-slate-200 text-slate-600'}`}>
                     {sections.map((section) => (
                         <button

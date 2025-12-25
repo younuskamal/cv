@@ -28,6 +28,36 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
     });
     const [loading, setLoading] = useState(true);
 
+    // Animated counter hook
+    const useAnimatedCounter = (end: number, duration: number = 2000) => {
+        const [count, setCount] = useState(0);
+
+        useEffect(() => {
+            let startTime: number;
+            let animationFrame: number;
+
+            const animate = (currentTime: number) => {
+                if (!startTime) startTime = currentTime;
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+
+                setCount(Math.floor(progress * end));
+
+                if (progress < 1) {
+                    animationFrame = requestAnimationFrame(animate);
+                }
+            };
+
+            animationFrame = requestAnimationFrame(animate);
+            return () => cancelAnimationFrame(animationFrame);
+        }, [end, duration]);
+
+        return count;
+    };
+
+    const animatedRepos = useAnimatedCounter(stats.repos);
+    const animatedFollowers = useAnimatedCounter(stats.followers);
+    const animatedStars = useAnimatedCounter(stats.stars);
+
     useEffect(() => {
         const fetchGitHubData = async () => {
             try {
@@ -95,25 +125,25 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
             <div className={`p-8 rounded-3xl backdrop-blur-xl border ${isDarkMode ? 'bg-slate-900/60 border-slate-700/50' : 'bg-white/70 border-white/50'} hover:scale-[1.01] transition-transform duration-300`}>
                 {/* Stats Summary */}
                 <div className="grid grid-cols-3 gap-6 mb-8">
-                    <div className="text-center">
-                        <div className={`text-4xl font-black mb-1 bg-gradient-to-r ${isDarkMode ? 'from-blue-400 to-cyan-400' : 'from-blue-600 to-cyan-600'} bg-clip-text text-transparent`}>
-                            {stats.repos}
+                    <div className="text-center group">
+                        <div className={`text-4xl font-black mb-1 bg-gradient-to-r ${isDarkMode ? 'from-blue-400 to-cyan-400' : 'from-blue-600 to-cyan-600'} bg-clip-text text-transparent transition-all duration-300 group-hover:scale-110`}>
+                            {animatedRepos}
                         </div>
                         <div className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                             Repositories
                         </div>
                     </div>
-                    <div className="text-center">
-                        <div className={`text-4xl font-black mb-1 bg-gradient-to-r ${isDarkMode ? 'from-emerald-400 to-green-400' : 'from-emerald-600 to-green-600'} bg-clip-text text-transparent`}>
-                            {stats.followers}
+                    <div className="text-center group">
+                        <div className={`text-4xl font-black mb-1 bg-gradient-to-r ${isDarkMode ? 'from-emerald-400 to-green-400' : 'from-emerald-600 to-green-600'} bg-clip-text text-transparent transition-all duration-300 group-hover:scale-110 animate-pulse`}>
+                            {animatedFollowers}
                         </div>
                         <div className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                             Followers
                         </div>
                     </div>
-                    <div className="text-center">
-                        <div className={`text-4xl font-black mb-1 bg-gradient-to-r ${isDarkMode ? 'from-yellow-400 to-orange-400' : 'from-yellow-600 to-orange-600'} bg-clip-text text-transparent`}>
-                            {stats.stars}
+                    <div className="text-center group">
+                        <div className={`text-4xl font-black mb-1 bg-gradient-to-r ${isDarkMode ? 'from-yellow-400 to-orange-400' : 'from-yellow-600 to-orange-600'} bg-clip-text text-transparent transition-all duration-300 group-hover:scale-110`}>
+                            {animatedStars}
                         </div>
                         <div className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                             Total Stars

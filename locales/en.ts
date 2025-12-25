@@ -39,6 +39,36 @@ export const en: ResumeData = {
             githubUrl: "https://github.com/younuskamal/sourceplus"
         }
     ],
+    aiCapabilities: [
+        {
+            title: "Local AI / Offline Intelligence",
+            description: "Building AI-powered features that run locally without cloud dependency. Implementing offline-first AI models for privacy-critical applications, edge computing solutions, and systems requiring zero-latency responses.",
+            tags: ["Local LLMs", "Offline AI", "Edge Computing", "Privacy-First"],
+            icon: "Brain",
+            applications: ["Smart POS decision support", "Real-time clinic diagnostics", "Offline translation", "Local data analysis"]
+        },
+        {
+            title: "Python AI Integration",
+            description: "Seamlessly integrating Python-based AI models with modern web and desktop applications. Building bridges between ML/AI backends (FastAPI, Flask) and production-ready frontends (React, Electron) with efficient API design and real-time data pipelines.",
+            tags: ["Python", "FastAPI", "ML Models", "API Integration"],
+            icon: "Cpu",
+            applications: ["Predictive inventory systems", "Automated billing intelligence", "Patient risk assessment", "Smart recommendations"]
+        },
+        {
+            title: "AI-Assisted Automation",
+            description: "Creating intelligent automation systems that learn and adapt. Implementing smart workflows, automated decision-making, and self-optimizing processes within business applications to reduce manual work and increase accuracy.",
+            tags: ["Smart Workflows", "AutoML", "Process Optimization", "Decision Support"],
+            icon: "Sparkles",
+            applications: ["Auto-categorization", "Smart scheduling", "Intelligent alerts", "Workflow optimization"]
+        },
+        {
+            title: "Practical AI Systems",
+            description: "Developing production-ready AI features integrated into real business systems. Focus on measurable ROI, user experience, and reliability—not theoretical models. Building AI that solves actual problems in POS, clinics, subscriptions, and enterprise software.",
+            tags: ["Production AI", "Business Intelligence", "Real-world ML", "Applied AI"],
+            icon: "Rocket",
+            applications: ["Revenue forecasting", "Fraud detection", "Customer insights", "Smart dashboards"]
+        }
+    ],
     methodology: [
         {
             title: "Agile Development",
@@ -135,6 +165,7 @@ export const en: ResumeData = {
             highlights: "Key Highlights",
             projects: "Featured Projects",
             methodology: "Work Methodology",
+            aiCapabilities: "AI Capabilities",
             experience: "Work Experience",
             education: "Education",
             languages: "Languages",

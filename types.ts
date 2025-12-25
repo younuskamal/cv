@@ -65,6 +65,14 @@ export interface MethodologyItem {
   icon: string;
 }
 
+export interface AICapability {
+  title: string;
+  description: string;
+  tags: string[];
+  icon: string;
+  applications: string[];
+}
+
 export interface ResumeData {
   name: string;
   title: string;
@@ -74,6 +82,7 @@ export interface ResumeData {
   highlights: string[];
   projects: ProjectItem[];
   methodology: MethodologyItem[];
+  aiCapabilities: AICapability[];
   education: EducationItem[];
   experience: ExperienceItem[];
   languages: LanguageSkill[];
@@ -83,6 +92,7 @@ export interface ResumeData {
       highlights: string;
       projects: string;
       methodology: string;
+      aiCapabilities: string;
     }
   };
 }

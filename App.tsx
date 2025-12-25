@@ -16,6 +16,7 @@ import EducationSection from './components/MainContent/EducationSection';
 import HighlightsSection from './components/MainContent/HighlightsSection';
 import ProjectsSection from './components/MainContent/ProjectsSection';
 import MethodologySection from './components/MainContent/MethodologySection';
+import AICapabilitiesSection from './components/MainContent/AICapabilitiesSection';
 import TechStack from './components/MainContent/TechStack';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -229,6 +230,7 @@ const App: React.FC = () => {
             <AboutSection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
             <HighlightsSection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
             <MethodologySection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
+            <AICapabilitiesSection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
             <ExperienceSection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
             <ProjectsSection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
             <GitHubStats username="younuskamal" isDarkMode={isDarkMode} isPdfMode={isPdfMode} />

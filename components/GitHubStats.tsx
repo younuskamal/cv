@@ -71,7 +71,7 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
     }
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const maxActivity = Math.max(...stats.activity);
+    const maxActivity = stats.activity.length > 0 ? Math.max(...stats.activity) : 1;
 
     return (
         <section className="mb-8 animate-fade-in-up animation-delay-400">
@@ -139,12 +139,12 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
                                     <div className="relative flex-1 w-full flex items-end">
                                         <div
                                             className={`w-full rounded-t-lg transition-all duration-500 ease-out ${isDarkMode
-                                                    ? isHighActivity
-                                                        ? 'bg-gradient-to-t from-emerald-600 to-emerald-400'
-                                                        : 'bg-gradient-to-t from-blue-900 to-blue-700'
-                                                    : isHighActivity
-                                                        ? 'bg-gradient-to-t from-emerald-500 to-emerald-300'
-                                                        : 'bg-gradient-to-t from-blue-500 to-blue-300'
+                                                ? isHighActivity
+                                                    ? 'bg-gradient-to-t from-emerald-600 to-emerald-400'
+                                                    : 'bg-gradient-to-t from-blue-900 to-blue-700'
+                                                : isHighActivity
+                                                    ? 'bg-gradient-to-t from-emerald-500 to-emerald-300'
+                                                    : 'bg-gradient-to-t from-blue-500 to-blue-300'
                                                 } hover:scale-105 hover:shadow-lg cursor-pointer`}
                                             style={{ height: `${height}%` }}
                                         >

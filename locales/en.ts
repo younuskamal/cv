@@ -67,6 +67,13 @@ export const en: ResumeData = {
             tags: ["Production AI", "Business Intelligence", "Real-world ML", "Applied AI"],
             icon: "Rocket",
             applications: ["Revenue forecasting", "Fraud detection", "Customer insights", "Smart dashboards"]
+        },
+        {
+            title: "Face Recognition & Computer Vision",
+            description: "Building camera-based intelligent systems using Python. Implementing face detection, recognition, and tracking for access control, attendance, and smart automation. Integrating computer vision with desktop/web applications and hardware control systems for real-world deployments.",
+            tags: ["OpenCV", "Face Recognition", "Python", "Camera Control"],
+            icon: "Eye",
+            applications: ["Smart access control", "Automated attendance", "Security systems", "Visual interaction control"]
         }
     ],
     methodology: [

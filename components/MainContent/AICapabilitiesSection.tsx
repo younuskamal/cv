@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, Cpu, Sparkles, Rocket, ChevronDown, ChevronUp, Zap } from 'lucide-react';
+import { Brain, Cpu, Sparkles, Rocket, Eye, ChevronDown, ChevronUp, Zap } from 'lucide-react';
 import { ResumeData } from '../../types';
 
 interface AICapabilitiesSectionProps {
@@ -22,7 +22,8 @@ const AICapabilitiesSection: React.FC<AICapabilitiesSectionProps> = ({ data, car
             'Brain': <Brain size={24} />,
             'Cpu': <Cpu size={24} />,
             'Sparkles': <Sparkles size={24} />,
-            'Rocket': <Rocket size={24} />
+            'Rocket': <Rocket size={24} />,
+            'Eye': <Eye size={24} />
         };
         return icons[iconName] || <Zap size={24} />;
     };

@@ -18,15 +18,6 @@ const LanguagesCard: React.FC<LanguagesCardProps> = ({ data, isPdfMode, isDarkMo
         return "👋";
     };
 
-    const getLanguageFlag = (name: string) => {
-        const lower = name.toLowerCase();
-        if (lower.includes('arab') || lower.includes('عرب')) return "🇸🇦";
-        if (lower.includes('kurd') || lower.includes('كرد') || lower.includes('کورد')) return "🏴";
-        if (lower.includes('turk') || lower.includes('türk') || lower.includes('ترك')) return "🇹🇷";
-        if (lower.includes('eng') || lower.includes('ing')) return "🇬🇧";
-        return "🌐";
-    };
-
     const [hasMounted, setHasMounted] = React.useState(false);
     const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
@@ -55,12 +46,9 @@ const LanguagesCard: React.FC<LanguagesCardProps> = ({ data, isPdfMode, isDarkMo
                         onMouseLeave={() => setHoveredIndex(null)}
                     >
                         <div className="flex justify-between items-center mb-3">
-                            <div className="flex items-center gap-2">
-                                <span className="text-xl">{getLanguageFlag(lang.name)}</span>
-                                <span className={`text-sm font-bold transition-all duration-300 ${isDarkMode ? 'text-slate-200 group-hover:text-blue-400' : 'text-slate-700 group-hover:text-blue-600'} ${hoveredIndex === index ? 'scale-110' : ''}`}>
-                                    {lang.name}
-                                </span>
-                            </div>
+                            <span className={`text-sm font-bold transition-all duration-300 ${isDarkMode ? 'text-slate-200 group-hover:text-blue-400' : 'text-slate-700 group-hover:text-blue-600'} ${hoveredIndex === index ? 'scale-110' : ''}`}>
+                                {lang.name}
+                            </span>
 
                             <div className="relative h-6 flex justify-end overflow-hidden">
                                 {/* Default Level Label */}

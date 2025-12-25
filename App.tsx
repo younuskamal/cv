@@ -52,6 +52,18 @@ const App: React.FC = () => {
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
+  useEffect(() => {
+    const body = document.body;
+    if (isPdfMode) {
+      body.classList.add('pdf-mode');
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } else {
+      body.classList.remove('pdf-mode');
+    }
+
+    return () => body.classList.remove('pdf-mode');
+  }, [isPdfMode]);
+
   const handleDownload = async () => {
     setIsDownloading(true);
     setIsPdfMode(true);

@@ -26,6 +26,46 @@
       font-family: 'Cairo', sans-serif;
     }
 
+    .break-inside-avoid {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .pdf-page-break {
+      page-break-before: always;
+    }
+
+    body.pdf-mode {
+      background-color: #e2e8f0;
+    }
+
+    body.pdf-mode #root {
+      padding: 24px 0 40px;
+    }
+
+    body.pdf-mode #cv-content {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 30px;
+      box-shadow: 0 40px 80px rgba(15, 23, 42, 0.12);
+    }
+
+    body.pdf-mode * {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    body.pdf-mode .spotlight-card::before,
+    body.pdf-mode .bg-noise,
+    body.pdf-mode .print\:hidden {
+      display: none !important;
+    }
+
+    body.pdf-mode main {
+      padding-top: 0 !important;
+      margin-top: 0 !important;
+    }
+
     @media print {
       @page {
         margin: 0;
@@ -52,6 +92,12 @@
       /* Unstick sidebar for print */
       .lg\:sticky {
         position: static !important;
+      }
+
+      .spotlight-card::before,
+      .bg-noise,
+      .print\:hidden {
+        display: none !important;
       }
     }
 

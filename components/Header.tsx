@@ -10,8 +10,41 @@ interface HeaderProps {
     toggleDarkMode: () => void;
 }
 
+const languages: LanguageCode[] = ['en', 'tr', 'ar', 'ku'];
+
 const Header: React.FC<HeaderProps> = ({ lang, setLang, isPdfMode, isDarkMode, toggleDarkMode }) => {
     if (isPdfMode) return null;
+
+    const [isLangMenuOpen, setIsLangMenuOpen] = React.useState(false);
+    const mobileLangRef = React.useRef<HTMLDivElement | null>(null);
+
+    React.useEffect(() => {
+        if (!isLangMenuOpen) return;
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (mobileLangRef.current && !mobileLangRef.current.contains(event.target as Node)) {
+                setIsLangMenuOpen(false);
+            }
+        };
+
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setIsLangMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleEscape);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [isLangMenuOpen]);
+
+    const handleLanguageChange = (code: LanguageCode) => {
+        setLang(code);
+        setIsLangMenuOpen(false);
+    };
 
     return (
         <nav
@@ -54,10 +87,10 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, isPdfMode, isDarkMode, t
                     </button>
 
                     <div className={`hidden sm:flex p-1 md:p-1.5 rounded-xl md:rounded-2xl gap-1 transition-colors duration-300 ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100/80'}`}>
-                        {(['en', 'tr', 'ar', 'ku'] as LanguageCode[]).map((code) => (
+                        {languages.map((code) => (
                             <button
                                 key={code}
-                                onClick={() => setLang(code)}
+                                onClick={() => handleLanguageChange(code)}
                                 className={`
                                     w-10 h-8 md:w-12 md:h-9 rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold transition-all uppercase flex items-center justify-center
                                     ${lang === code
@@ -69,6 +102,41 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, isPdfMode, isDarkMode, t
                                 {code}
                             </button>
                         ))}
+                    </div>
+
+                    {/* Mobile Language Selector */}
+                    <div className="relative sm:hidden" ref={mobileLangRef}>
+                        <button
+                            onClick={() => setIsLangMenuOpen((open) => !open)}
+                            className={`w-10 h-10 rounded-2xl text-xs font-bold uppercase flex flex-col items-center justify-center gap-0.5 shadow-sm transition-colors
+                                ${isDarkMode ? 'bg-slate-800 text-slate-100 border border-slate-700' : 'bg-white text-slate-800 border border-slate-200'}`}
+                            aria-haspopup="true"
+                            aria-expanded={isLangMenuOpen}
+                        >
+                            <span className="text-[9px] tracking-wide">Lang</span>
+                            <span className="text-[11px]">{lang}</span>
+                        </button>
+                        {isLangMenuOpen && (
+                            <div
+                                className={`absolute right-0 mt-2 w-36 rounded-2xl border shadow-2xl p-2 flex flex-col gap-1 z-50 ${isDarkMode ? 'bg-slate-900 border-slate-700 text-slate-100' : 'bg-white border-slate-200 text-slate-900'}`}
+                                role="menu"
+                            >
+                                {languages.map((code) => (
+                                    <button
+                                        key={`mobile-${code}`}
+                                        onClick={() => handleLanguageChange(code)}
+                                        className={`text-left px-3 py-2 rounded-xl text-sm font-semibold uppercase transition-colors
+                                            ${lang === code
+                                                ? `${isDarkMode ? 'bg-blue-600/20 text-blue-200' : 'bg-blue-50 text-blue-600'}`
+                                                : `${isDarkMode ? 'hover:bg-slate-800' : 'hover:bg-slate-100'}`
+                                            }`}
+                                        role="menuitem"
+                                    >
+                                        {code}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

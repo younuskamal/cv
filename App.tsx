@@ -21,6 +21,7 @@ import ScrollToTop from './components/ScrollToTop';
 
 import BackgroundAnimation from './components/BackgroundAnimation';
 import InteractiveParticles from './components/InteractiveParticles';
+import GitHubStats from './components/GitHubStats';
 import QuickNav from './components/QuickNav';
 
 // Profile image path
@@ -230,6 +231,7 @@ const App: React.FC = () => {
             <MethodologySection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
             <ExperienceSection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
             <ProjectsSection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
+            <GitHubStats username="younuskamal" isDarkMode={isDarkMode} isPdfMode={isPdfMode} />
             <EducationSection data={data} cardClass={cardClass} isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
             <TechStack isPdfMode={isPdfMode} isDarkMode={isDarkMode} />
           </div>

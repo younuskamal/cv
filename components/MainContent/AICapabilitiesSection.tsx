@@ -10,7 +10,7 @@ interface AICapabilitiesSectionProps {
 }
 
 const AICapabilitiesSection: React.FC<AICapabilitiesSectionProps> = ({ data, cardClass, isPdfMode, isDarkMode }) => {
-    const [expandedIndex, setExpandedIndex] = useState<number | null>(isPdfMode ? null : 0);
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(isPdfMode ? null : null);
 
     const toggleExpand = (index: number) => {
         if (isPdfMode) return;

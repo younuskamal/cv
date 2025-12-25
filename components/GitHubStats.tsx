@@ -134,7 +134,60 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
     if (isPdfMode) return null;
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const maxActivity = stats.activity.length > 0 ? Math.max(...stats.activity) : 1;
+    const maxActivityRaw = stats.activity.length > 0 ? Math.max(...stats.activity) : 1;
+    const niceStep = Math.max(5, Math.ceil(maxActivityRaw / 5));
+    const maxActivity = Math.max(maxActivityRaw, niceStep * 4);
+    const avgActivity =
+        stats.activity.length > 0
+            ? Math.round(stats.activity.reduce((sum, value) => sum + value, 0) / stats.activity.length)
+            : 0;
+    const chartWidth = 720;
+    const chartHeight = 240;
+    const paddingX = 48;
+    const paddingY = 30;
+    const usableWidth = chartWidth - paddingX * 2;
+    const usableHeight = chartHeight - paddingY * 2;
+
+    const gradientSuffix = (username || 'activity').replace(/[^a-zA-Z0-9_-]/g, '');
+    const gradientIds = {
+        grid: `activityGrid-${gradientSuffix}`,
+        line: `activityLine-${gradientSuffix}`,
+        fill: `activityFill-${gradientSuffix}`,
+        glow: `activityGlow-${gradientSuffix}`
+    };
+
+    const points = stats.activity.map((count, index) => {
+        const x = paddingX + (index / Math.max(stats.activity.length - 1, 1)) * usableWidth;
+        const y = chartHeight - paddingY - (count / maxActivity) * usableHeight;
+        return { x, y, label: months[index] ?? `M${index + 1}`, value: count };
+    });
+    const highlightedPoint =
+        points.length > 0
+            ? points.reduce(
+                  (best, point, index) => (point.value > best.value ? { ...point, index } : best),
+                  { ...points[0], index: 0 }
+              )
+            : null;
+
+    const buildSmoothPath = (close = false) => {
+        if (points.length === 0) return '';
+        let path = `M ${points[0].x},${points[0].y}`;
+
+        for (let i = 0; i < points.length - 1; i++) {
+            const current = points[i];
+            const next = points[i + 1];
+            const controlPointX = (current.x + next.x) / 2;
+            path += ` Q ${controlPointX},${current.y} ${controlPointX},${(current.y + next.y) / 2}`;
+            path += ` Q ${controlPointX},${next.y} ${next.x},${next.y}`;
+        }
+
+        if (close) {
+            path += ` L ${points[points.length - 1].x},${chartHeight - paddingY}`;
+            path += ` L ${points[0].x},${chartHeight - paddingY} Z`;
+        }
+
+        return path;
+    };
 
     return (
         <section ref={sectionRef} className="mb-8 animate-fade-in-up animation-delay-400">
@@ -194,163 +247,218 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
                     </div>
 
                     {/* Line Chart with SVG */}
-                    <div className="relative h-40">
-                        <svg className="w-full h-full" viewBox="0 0 600 160" preserveAspectRatio="none">
-                            {/* Grid lines */}
-                            {[0, 1, 2, 3, 4].map((i) => (
+                    <div className="relative h-64">
+                        <svg className="w-full h-full" viewBox={`0 0 ${chartWidth} ${chartHeight}`} preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id={gradientIds.grid} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor={isDarkMode ? 'rgba(148, 163, 184, 0.18)' : 'rgba(15, 23, 42, 0.08)'} />
+                                    <stop offset="100%" stopColor={isDarkMode ? 'rgba(15, 23, 42, 0.0)' : 'rgba(148, 163, 184, 0.0)'} />
+                                </linearGradient>
+                                <linearGradient id={gradientIds.line} x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="0%" stopColor={isDarkMode ? '#60a5fa' : '#2563eb'} />
+                                    <stop offset="100%" stopColor={isDarkMode ? '#34d399' : '#0ea5e9'} />
+                                </linearGradient>
+                                <linearGradient id={gradientIds.fill} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor={isDarkMode ? 'rgba(59, 130, 246, 0.45)' : 'rgba(59, 130, 246, 0.25)'} />
+                                    <stop offset="60%" stopColor={isDarkMode ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.08)'} />
+                                    <stop offset="100%" stopColor={isDarkMode ? 'rgba(15, 23, 42, 0.05)' : 'rgba(255, 255, 255, 0.05)'} />
+                                </linearGradient>
+                                <radialGradient id={gradientIds.glow} cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stopColor={isDarkMode ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.9)'} />
+                                    <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                                </radialGradient>
+                            </defs>
+
+                            {/* Background */}
+                            <rect
+                                x={paddingX}
+                                y={paddingY}
+                                width={usableWidth}
+                                height={usableHeight}
+                                fill={isDarkMode ? 'rgba(15, 23, 42, 0.25)' : 'rgba(241, 245, 249, 0.6)'}
+                                rx="18"
+                            />
+
+                            {/* Horizontal grid and labels */}
+                            {[0, 1, 2, 3, 4].map((index) => {
+                                const value = maxActivity - index * niceStep;
+                                const y = paddingY + (index * usableHeight) / 4;
+                                return (
+                                    <g key={`grid-${index}`}>
+                                        <line
+                                            x1={paddingX}
+                                            y1={y}
+                                            x2={chartWidth - paddingX}
+                                            y2={y}
+                                            stroke={`url(#${gradientIds.grid})`}
+                                            strokeWidth="1"
+                                            strokeDasharray="6 6"
+                                        />
+                                        <text
+                                            x={paddingX - 12}
+                                            y={y + 4}
+                                            fontSize="11"
+                                            textAnchor="end"
+                                            fill={isDarkMode ? '#cbd5f5' : '#475569'}
+                                        >
+                                            {value}
+                                        </text>
+                                    </g>
+                                );
+                            })}
+
+                            {/* Vertical grid */}
+                            {points.map((point, index) => (
                                 <line
-                                    key={i}
-                                    x1="0"
-                                    y1={i * 40}
-                                    x2="600"
-                                    y2={i * 40}
-                                    stroke={isDarkMode ? 'rgba(100, 116, 139, 0.1)' : 'rgba(148, 163, 184, 0.15)'}
-                                    strokeWidth="1"
+                                    key={`v-grid-${point.label}-${index}`}
+                                    x1={point.x}
+                                    y1={paddingY}
+                                    x2={point.x}
+                                    y2={chartHeight - paddingY}
+                                    stroke={isDarkMode ? 'rgba(30, 41, 59, 0.35)' : 'rgba(148, 163, 184, 0.25)'}
+                                    strokeWidth={index % 2 === 0 ? 1 : 0.5}
+                                    strokeDasharray={index % 2 === 0 ? '4 8' : '2 8'}
                                 />
                             ))}
 
+                            {/* Average line */}
+                            {avgActivity > 0 && (
+                                <g>
+                                    <line
+                                        x1={paddingX}
+                                        y1={chartHeight - paddingY - (avgActivity / maxActivity) * usableHeight}
+                                        x2={chartWidth - paddingX}
+                                        y2={chartHeight - paddingY - (avgActivity / maxActivity) * usableHeight}
+                                        stroke={isDarkMode ? 'rgba(236, 72, 153, 0.6)' : 'rgba(190, 24, 93, 0.45)'}
+                                        strokeWidth="1.5"
+                                        strokeDasharray="6 6"
+                                    />
+                                    <text
+                                        x={chartWidth - paddingX + 8}
+                                        y={chartHeight - paddingY - (avgActivity / maxActivity) * usableHeight + 4}
+                                        fontSize="10"
+                                        fill={isDarkMode ? '#f472b6' : '#db2777'}
+                                    >
+                                        Avg {avgActivity}
+                                    </text>
+                                </g>
+                            )}
+
                             {/* Area under curve */}
                             <path
-                                d={(() => {
-                                    const points = stats.activity.map((count, i) => ({
-                                        x: (i * 600) / 11,
-                                        y: 140 - ((count / maxActivity) * 120)
-                                    }));
-
-                                    // Create smooth curve using cubic bezier
-                                    let path = `M 0,140 L ${points[0].x},${points[0].y}`;
-
-                                    for (let i = 0; i < points.length - 1; i++) {
-                                        const current = points[i];
-                                        const next = points[i + 1];
-                                        const controlPointX = (current.x + next.x) / 2;
-
-                                        path += ` Q ${controlPointX},${current.y} ${(current.x + next.x) / 2},${(current.y + next.y) / 2}`;
-                                        path += ` Q ${controlPointX},${next.y} ${next.x},${next.y}`;
-                                    }
-
-                                    path += ` L 600,140 Z`;
-                                    return path;
-                                })()}
-                                fill={isDarkMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.08)'}
+                                d={buildSmoothPath(true)}
+                                fill={`url(#${gradientIds.fill})`}
                                 className="animate-[fadeIn_1s_ease-out]"
                             />
 
                             {/* Line */}
                             <path
-                                d={(() => {
-                                    const points = stats.activity.map((count, i) => ({
-                                        x: (i * 600) / 11,
-                                        y: 140 - ((count / maxActivity) * 120)
-                                    }));
-
-                                    // Create smooth curve using cubic bezier
-                                    let path = `M ${points[0].x},${points[0].y}`;
-
-                                    for (let i = 0; i < points.length - 1; i++) {
-                                        const current = points[i];
-                                        const next = points[i + 1];
-                                        const controlPointX = (current.x + next.x) / 2;
-
-                                        path += ` Q ${controlPointX},${current.y} ${(current.x + next.x) / 2},${(current.y + next.y) / 2}`;
-                                        path += ` Q ${controlPointX},${next.y} ${next.x},${next.y}`;
-                                    }
-
-                                    return path;
-                                })()}
+                                d={buildSmoothPath(false)}
                                 fill="none"
-                                stroke={isDarkMode ? 'rgb(59, 130, 246)' : 'rgb(37, 99, 235)'}
-                                strokeWidth="3"
+                                stroke={`url(#${gradientIds.line})`}
+                                strokeWidth="3.5"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                className="animate-[drawLine_2s_ease-out]"
+                                className="animate-[drawLine_1.4s_ease-out]"
                                 style={{
-                                    filter: isDarkMode ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))' : 'drop-shadow(0 0 6px rgba(59, 130, 246, 0.3))'
+                                    filter: isDarkMode ? 'drop-shadow(0 0 18px rgba(59, 130, 246, 0.45))' : 'drop-shadow(0 0 12px rgba(59, 130, 246, 0.35))'
                                 }}
                             />
 
-                            {/* Data points */}
-                            {stats.activity.map((count, index) => {
-                                const x = (index * 600) / 11;
-                                const y = 140 - ((count / maxActivity) * 120);
-                                const isHigh = count > maxActivity * 0.7;
+                            {/* Highlighted glow */}
+                            {highlightedPoint && (
+                                <circle
+                                    cx={highlightedPoint.x}
+                                    cy={highlightedPoint.y}
+                                    r="20"
+                                    fill={`url(#${gradientIds.glow})`}
+                                    opacity="0.55"
+                                />
+                            )}
 
+                            {/* Data points */}
+                            {points.map((point, index) => {
+                                const isHigh = highlightedPoint ? highlightedPoint.index === index : false;
                                 return (
-                                    <g key={index} className="group cursor-pointer">
-                                        {/* Hover effect circle */}
+                                    <g key={`${point.label}-${index}`} className="group cursor-pointer focus:outline-none">
                                         <circle
-                                            cx={x}
-                                            cy={y}
-                                            r="12"
-                                            fill={isDarkMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)'}
+                                            cx={point.x}
+                                            cy={point.y}
+                                            r="13"
+                                            fill={isDarkMode ? 'rgba(59, 130, 246, 0.15)' : 'rgba(59, 130, 246, 0.15)'}
                                             className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                                         />
-
-                                        {/* Main dot */}
                                         <circle
-                                            cx={x}
-                                            cy={y}
-                                            r="4"
-                                            fill={isHigh
-                                                ? (isDarkMode ? 'rgb(52, 211, 153)' : 'rgb(16, 185, 129)')
-                                                : (isDarkMode ? 'rgb(96, 165, 250)' : 'rgb(59, 130, 246)')
-                                            }
-                                            className="transition-all duration-300 group-hover:r-6"
+                                            cx={point.x}
+                                            cy={point.y}
+                                            r={isHigh ? 7 : 5}
+                                            fill={isHigh ? (isDarkMode ? '#f472b6' : '#ec4899') : isDarkMode ? '#93c5fd' : '#2563eb'}
+                                            className="transition-all duration-300 group-hover:r-7"
                                             style={{
-                                                animation: `fadeIn 0.5s ease-out ${index * 0.1}s both`,
-                                                filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))'
+                                                animation: `popIn 0.6s ease-out ${0.04 * index}s both`,
+                                                filter: 'drop-shadow(0 4px 10px rgba(15, 23, 42, 0.35))'
                                             }}
                                         />
-
-                                        {/* Tooltip on hover */}
                                         <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                                             <rect
-                                                x={x - 35}
-                                                y={y - 45}
-                                                width="70"
-                                                height="30"
-                                                rx="6"
-                                                fill={isDarkMode ? 'rgb(15, 23, 42)' : 'rgb(30, 41, 59)'}
-                                                stroke={isDarkMode ? 'rgb(59, 130, 246)' : 'rgb(96, 165, 250)'}
+                                                x={point.x - 48}
+                                                y={point.y - 58}
+                                                width="96"
+                                                height="44"
+                                                rx="12"
+                                                fill={isDarkMode ? 'rgba(2, 6, 23, 0.95)' : 'rgba(255, 255, 255, 0.95)'}
+                                                stroke={isHigh ? (isDarkMode ? '#f472b6' : '#db2777') : (isDarkMode ? '#2563eb' : '#0f172a')}
                                                 strokeWidth="1.5"
                                             />
                                             <text
-                                                x={x}
-                                                y={y - 32}
+                                                x={point.x}
+                                                y={point.y - 40}
                                                 textAnchor="middle"
-                                                fill="white"
-                                                fontSize="11"
+                                                fill={isDarkMode ? '#f8fafc' : '#0f172a'}
+                                                fontSize="12"
                                                 fontWeight="bold"
                                             >
-                                                {count} commits
+                                                {point.value} commits
                                             </text>
                                             <text
-                                                x={x}
-                                                y={y - 20}
+                                                x={point.x}
+                                                y={point.y - 25}
                                                 textAnchor="middle"
-                                                fill={isDarkMode ? 'rgb(148, 163, 184)' : 'rgb(203, 213, 225)'}
-                                                fontSize="9"
+                                                fill={isDarkMode ? '#cbd5f5' : '#475569'}
+                                                fontSize="10"
                                             >
-                                                {months[index]}
+                                                {point.label}
                                             </text>
                                         </g>
                                     </g>
                                 );
                             })}
-                        </svg>
 
-                        {/* Month labels below chart */}
-                        <div className="flex justify-between mt-2 px-1">
-                            {months.map((month, index) => (
-                                <span
-                                    key={index}
-                                    className={`text-[10px] font-bold ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}
-                                    style={{ width: '8.33%', textAlign: 'center' }}
-                                >
-                                    {month}
-                                </span>
+                            {/* Month labels */}
+                            {points.map((point) => (
+                                <g key={`label-${point.label}`}>
+                                    <line
+                                        x1={point.x}
+                                        y1={chartHeight - paddingY}
+                                        x2={point.x}
+                                        y2={chartHeight - paddingY + 6}
+                                        stroke={isDarkMode ? '#475569' : '#94a3b8'}
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                    />
+                                    <text
+                                        x={point.x}
+                                        y={chartHeight - paddingY + 22}
+                                        textAnchor="middle"
+                                        fill={isDarkMode ? '#cbd5f5' : '#475569'}
+                                        fontSize="11"
+                                        fontWeight="600"
+                                    >
+                                        {point.label}
+                                    </text>
+                                </g>
                             ))}
-                        </div>
+                        </svg>
                     </div>
                 </div>
 
@@ -363,6 +471,11 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({ username, isDarkMode, isPdfMo
                     @keyframes fadeIn {
                         from { opacity: 0; transform: scale(0); }
                         to { opacity: 1; transform: scale(1); }
+                    }
+                    @keyframes popIn {
+                        0% { transform: scale(0); opacity: 0; }
+                        60% { transform: scale(1.15); opacity: 1; }
+                        100% { transform: scale(1); opacity: 1; }
                     }
                 `}</style>
             </div>

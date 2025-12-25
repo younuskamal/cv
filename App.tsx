@@ -219,7 +219,10 @@ const App: React.FC = () => {
       <Header lang={lang} setLang={setLang} isPdfMode={isPdfMode} isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 
       {/* Main Content */}
-      <main id="cv-content" className={`max-w-7xl mx-auto px-4 py-6 md:py-16 relative z-10 ${isPdfMode ? 'bg-white !max-w-[190mm] mx-auto !p-0 !px-[15mm] !py-[15mm]' : ''} spotlight-group transform transition-all duration-700 ${isLoading ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+      <main
+        id="cv-content"
+        className={`max-w-7xl mx-auto px-4 relative z-10 ${isPdfMode ? 'bg-white !max-w-[190mm] mx-auto !p-0 !px-[15mm] !py-[15mm]' : 'pt-24 pb-28 md:pt-16 md:pb-16'} spotlight-group transform transition-all duration-700 ${isLoading ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}
+      >
         <div className={`items-start gap-6 md:gap-10 ${isPdfMode ? 'flex flex-col !gap-6' : 'grid grid-cols-1 lg:grid-cols-12'}`}>
 
           {/* LEFT SIDEBAR (Or Top Section in PDF) */}

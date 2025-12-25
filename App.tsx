@@ -23,7 +23,7 @@ import BackgroundAnimation from './components/BackgroundAnimation';
 import QuickNav from './components/QuickNav';
 
 // Profile image path
-const profileImage = "./images/wp.jpg";
+const profileImage = "/images/wp.jpg";
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<LanguageCode>('en');
@@ -53,9 +53,10 @@ const App: React.FC = () => {
     setIsDownloading(true);
     setIsPdfMode(true);
     const wasDarkMode = isDarkMode;
-    setIsDarkMode(false); // Force Light Mode for clean, professional, colorful export
+    setIsDarkMode(false); // Force Light Mode for clean PDF
 
-    await new Promise(resolve => setTimeout(resolve, 1200)); // Wait longer for complete render
+    // Wait longer for complete render + animations to settle
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof (window as any).html2pdf === 'undefined') {
@@ -67,34 +68,58 @@ const App: React.FC = () => {
     }
 
     const element = document.getElementById('cv-content');
+
+    // Optimized settings for professional PDF
     const opt = {
-      margin: [10, 10, 10, 10], // Top, Right, Bottom, Left in mm
-      filename: `Younis_Yasser_CV_${lang.toUpperCase()}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
+      margin: [12, 12, 12, 12], // Balanced margins in mm
+      filename: `Younis_Yasser_Kamal_CV_${lang.toUpperCase()}.pdf`,
+      image: {
+        type: 'jpeg',
+        quality: 0.95 // High quality
+      },
       html2canvas: {
-        scale: 2.5, // Higher quality
+        scale: 3, // Ultra-high quality
         useCORS: true,
         scrollY: -window.scrollY,
-        windowWidth: 1200, // Optimal width for A4
-        windowHeight: element?.scrollHeight || 2000,
+        scrollX: 0,
+        windowWidth: 1100, // Optimal for A4
+        windowHeight: element?.scrollHeight || 2500,
         logging: false,
         letterRendering: true,
         allowTaint: false,
-        ignoreElements: (element: Element) =>
-          element.classList.contains('print:hidden') ||
-          element.hasAttribute('data-html2canvas-ignore')
+        backgroundColor: '#ffffff',
+        imageTimeout: 0,
+        removeContainer: true,
+        ignoreElements: (element: Element) => {
+          return (
+            element.classList.contains('print:hidden') ||
+            element.hasAttribute('data-html2canvas-ignore') ||
+            element.getAttribute('data-pdf-ignore') === 'true'
+          );
+        }
       },
       jsPDF: {
         unit: 'mm',
         format: 'a4',
         orientation: 'portrait',
-        compress: true
+        compress: true,
+        precision: 2
       },
       pagebreak: {
         mode: ['avoid-all', 'css', 'legacy'],
-        before: '.page-break-before',
-        after: '.page-break-after',
-        avoid: '.break-inside-avoid'
+        before: ['.page-break-before', '.break-before'],
+        after: ['.page-break-after', '.break-after'],
+        avoid: [
+          '.break-inside-avoid',
+          'img',
+          'table',
+          'tr',
+          '.card',
+          '.profile-section',
+          '.experience-item',
+          '.education-item',
+          '.project-card'
+        ]
       }
     };
 

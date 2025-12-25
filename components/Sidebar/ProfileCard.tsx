@@ -74,7 +74,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                     </div>
                     {!isPdfMode && (
                         <>
-                            <div className={`absolute -bottom-3 -right-3 w-12 h-12 ${isDarkMode ? 'bg-slate-800 text-white border-slate-700' : 'bg-white text-slate-900'} rounded-2xl flex items-center justify-center shadow-lg border-4 border-transparent z-10`}>
+                            <div className={`absolute -bottom-3 -right-3 w-12 h-12 ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'} rounded-2xl flex items-center justify-center shadow-xl z-10 ring-2 ${isDarkMode ? 'ring-slate-700/50' : 'ring-slate-100'}`}>
                                 <Briefcase size={20} className={isDarkMode ? 'text-blue-400' : 'text-blue-600'} />
                             </div>
                             <div className={`absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md shadow-lg border border-white/20 ${isDarkMode ? 'bg-black/50 text-emerald-400' : 'bg-white/80 text-emerald-600'}`}>

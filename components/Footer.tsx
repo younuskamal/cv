@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Linkedin, MessageCircle } from 'lucide-react';
+import { Github, MessageCircle } from 'lucide-react';
 import { ContactInfo } from '../types';
 
 interface FooterProps {
@@ -25,14 +25,6 @@ const Footer: React.FC<FooterProps> = ({ isPdfMode, contact, isRtl }) => {
                     <Github size={22} />
                     <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-slate-900 text-white text-xs py-1 px-2 rounded-lg whitespace-nowrap">
                         GitHub
-                    </span>
-                </a>
-
-                {/* LinkedIn */}
-                <a href="#" className="group relative w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-[#0077b5] hover:text-white transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1">
-                    <Linkedin size={22} />
-                    <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-[#0077b5] text-white text-xs py-1 px-2 rounded-lg whitespace-nowrap">
-                        LinkedIn
                     </span>
                 </a>
 

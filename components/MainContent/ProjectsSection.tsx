@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Rocket, ChevronDown, ChevronUp, ShoppingCart, Activity, Shield, ArrowUpRight } from 'lucide-react';
+import { Rocket, ChevronDown, ChevronUp, ShoppingCart, Activity, Shield, ArrowUpRight, Github, ExternalLink } from 'lucide-react';
 import { ResumeData } from '../../types';
 
 interface ProjectsSectionProps {
@@ -41,7 +41,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ data, cardClass, isPd
                     return (
                         <div
                             key={index}
-                            className={`${cardClass} group cursor-pointer relative overflow-hidden transition-all duration-300 transform ${!isPdfMode && isExpanded ? `ring-1 ${isDarkMode ? 'ring-blue-500/50' : 'ring-blue-200'} scale-[1.01]` : 'hover:scale-[1.01]'}`}
+                            className={`${cardClass} group relative overflow-hidden transition-all duration-300 transform ${!isPdfMode && isExpanded ? `ring-2 ${isDarkMode ? 'ring-blue-500/50' : 'ring-blue-200'} scale-[1.01]` : 'hover:scale-[1.01] cursor-pointer'}`}
                             onClick={() => toggleExpand(index)}
                         >
                             {/* Project Header */}
@@ -74,18 +74,42 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ data, cardClass, isPd
 
                             {/* Expanded Content */}
                             <div
-                                className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isExpanded ? 'max-h-[500px] opacity-100 mt-6' : 'max-h-0 opacity-0'}`}
+                                className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isExpanded ? 'max-h-[600px] opacity-100 mt-6' : 'max-h-0 opacity-0'}`}
                             >
                                 <div className={`pt-6 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`}>
                                     <p className={`text-[15px] leading-relaxed font-medium ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                                         {project.description}
                                     </p>
 
-                                    {!isPdfMode && (
-                                        <div className="mt-4 flex justify-end">
-                                            <span className={`text-xs font-bold flex items-center gap-1 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                                                View Details <ArrowUpRight size={14} />
-                                            </span>
+                                    {/* Project Links */}
+                                    {!isPdfMode && (project.githubUrl || project.demoUrl) && (
+                                        <div className="mt-6 flex flex-wrap gap-3">
+                                            {project.githubUrl && (
+                                                <a
+                                                    href={project.githubUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${isDarkMode ? 'bg-slate-800 text-white hover:bg-slate-700 border border-slate-700' : 'bg-slate-900 text-white hover:bg-slate-800 shadow-md hover:shadow-lg'}`}
+                                                >
+                                                    <Github size={18} />
+                                                    <span>View on GitHub</span>
+                                                    <ExternalLink size={14} className="opacity-60" />
+                                                </a>
+                                            )}
+                                            {project.demoUrl && (
+                                                <a
+                                                    href={project.demoUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-500' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'}`}
+                                                >
+                                                    <Rocket size={18} />
+                                                    <span>Live Demo</span>
+                                                    <ExternalLink size={14} className="opacity-60" />
+                                                </a>
+                                            )}
                                         </div>
                                     )}
                                 </div>

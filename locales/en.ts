@@ -21,17 +21,22 @@ export const en: ResumeData = {
         {
             title: "SmartClinic - Dental Management SaaS",
             technologies: ["React 19", "TypeScript", "NestJS", "TypeORM", "PostgreSQL", "i18next", "3D Dental Chart"],
-            description: "Enterprise-grade SaaS platform for dental clinics featuring real-time appointment scheduling, interactive 3D dental charts (@react-three/fiber), patient records with HIPAA-compliant security, automated billing & invoicing, multi-language support (EN/AR/TR), and role-based access control (RBAC). Architected with offline-first approach and WebSocket for live notifications."
+            description: "Enterprise-grade SaaS platform for dental clinics featuring real-time appointment scheduling, interactive 3D dental charts (@react-three/fiber), patient records with HIPAA-compliant security, automated billing & invoicing, multi-language support (EN/AR/TR), and role-based access control (RBAC). Architected with offline-first approach and WebSocket for live notifications.",
+            githubUrl: "https://github.com/younuskamal/smartclinic",
+            demoUrl: "https://smartclinic-demo.vercel.app"
         },
         {
             title: "SmartPoint POS - Offline-First Point of Sale",
             technologies: ["Electron", "React", "NestJS", "SQLite", "TypeORM", "better-sqlite3", "Zustand"],
-            description: "Cross-platform desktop POS system with advanced offline-first architecture. Features dynamic business profiles (Restaurant/Pharmacy/Retail), RBAC with context-aware permissions, FEFO inventory management for pharmacies, Kitchen Display System (KDS), shift management, cloud sync with offline queue, license management with HWID locking, and multi-language RTL support. Built with modular NestJS backend bundled inside Electron."
+            description: "Cross-platform desktop POS system with advanced offline-first architecture. Features dynamic business profiles (Restaurant/Pharmacy/Retail), RBAC with context-aware permissions, FEFO inventory management for pharmacies, Kitchen Display System (KDS), shift management, cloud sync with offline queue, license management with HWID locking, and multi-language RTL support. Built with modular NestJS backend bundled inside Electron.",
+            githubUrl: "https://github.com/younuskamal/smartpoint-pos",
+            demoUrl: "https://github.com/younuskamal/smartpoint-pos/releases"
         },
         {
             title: "SourcePlus - License & Subscription Platform",
             technologies: ["Node.js", "Express", "PostgreSQL", "JWT", "Stripe API", "Hardware ID Verification"],
-            description: "Secure cloud-based licensing system managing subscription plans, device activation/validation, HWID-based protection, automatic renewals, and real-time license status synchronization. Implements retry logic with exponential backoff, encrypted token storage, and supports trial/offline modes for seamless user experience."
+            description: "Secure cloud-based licensing system managing subscription plans, device activation/validation, HWID-based protection, automatic renewals, and real-time license status synchronization. Implements retry logic with exponential backoff, encrypted token storage, and supports trial/offline modes for seamless user experience.",
+            githubUrl: "https://github.com/younuskamal/sourceplus"
         }
     ],
     methodology: [

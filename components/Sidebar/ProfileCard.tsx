@@ -67,6 +67,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                             src={profileImage}
                             alt={data.name}
                             className="w-full h-full object-cover"
+                            loading="lazy"
+                            decoding="async"
                             onError={(e) => {
                                 (e.target as any).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=0f172a&color=fff&size=200`;
                             }}

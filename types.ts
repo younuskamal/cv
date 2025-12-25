@@ -49,6 +49,14 @@ export interface ProjectItem {
   title: string;
   technologies: string[];
   description: string;
+  image?: string; // Project screenshot/preview
+  demoUrl?: string; // Live demo link
+  githubUrl?: string; // GitHub repository
+  stats?: {
+    stars?: number;
+    forks?: number;
+    language?: string;
+  };
 }
 
 export interface MethodologyItem {

@@ -34,6 +34,43 @@ export const tr: ResumeData = {
             description: "Abonelik planlarını, cihaz aktivasyonunu/doğrulamasını, HWID tabanlı korumayı, otomatik yenilemeleri ve gerçek zamanlı lisans durumu senkronizasyonunu yöneten güvenli bulut tabanlı lisanslama sistemi. Üstel geri çekilme mantığı, şifreli token depolama uygular ve sorunsuz kullanıcı deneyimi için deneme/çevrimdışı modları destekler."
         }
     ],
+    aiCapabilities: [
+        {
+            title: "Yerel Yapay Zeka / Çevrimdışı Zeka",
+            description: "Buluta bağımlı olmadan yerel olarak çalışan yapay zeka destekli özellikler geliştirme. Gizlilik açısından kritik uygulamalar, uç bilişim çözümleri ve sıfır gecikme gerektiren sistemler için çevrimdışı yapay zeka modelleri uygulama.",
+            tags: ["Yerel LLM'ler", "Çevrimdışı Yapay Zeka", "Uç Bilişim", "Gizlilik Öncelikli"],
+            icon: "Brain",
+            applications: ["Akıllı POS karar desteği", "Gerçek zamanlı klinik teşhis", "Çevrimdışı çeviri", "Yerel veri analizi"]
+        },
+        {
+            title: "Python Yapay Zeka Entegrasyonu",
+            description: "Python tabanlı yapay zeka modellerini modern web ve masaüstü uygulamalarıyla sorunsuz entegre etme. ML/AI backend'leri (FastAPI, Flask) ile üretime hazır frontend'ler (React, Electron) arasında verimli API tasarımı ve gerçek zamanlı veri hatları ile köprüler kurma.",
+            tags: ["Python", "FastAPI", "ML Modelleri", "API Entegrasyonu"],
+            icon: "Cpu",
+            applications: ["Tahmine dayalı envanter sistemleri", "Otomatik fatura zekası", "Hasta risk değerlendirmesi", "Akıllı öneriler"]
+        },
+        {
+            title: "Yapay Zeka Destekli Otomasyon",
+            description: "Öğrenen ve adapte olan akıllı otomasyon sistemleri oluşturma. Manuel çalışmayı azaltmak ve doğruluğu artırmak için iş uygulamaları içinde akıllı iş akışları, otomatik karar verme ve kendi kendini optimize eden süreçler uygulama.",
+            tags: ["Akıllı İş Akışları", "AutoML", "Süreç Optimizasyonu", "Karar Desteği"],
+            icon: "Sparkles",
+            applications: ["Otomatik kategorilendirme", "Akıllı planlama", "Akıllı uyarılar", "İş akışı optimizasyonu"]
+        },
+        {
+            title: "Pratik Yapay Zeka Sistemleri",
+            description: "Gerçek iş sistemlerine entegre edilmiş üretime hazır yapay zeka özellikleri geliştirme. Ölçülebilir yatırım getirisi, kullanıcı deneyimi ve güvenilirliğe odaklanma—teorik modeller değil. POS, klinikler, abonelikler ve kurumsal yazılımlarda gerçek sorunları çözen yapay zeka inşa etme.",
+            tags: ["Üretim Yapay Zekası", "İş Zekası", "Gerçek Dünya ML", "Uygulamalı Yapay Zeka"],
+            icon: "Rocket",
+            applications: ["Gelir tahmini", "Dolandırıcılık tespiti", "Müşteri içgörüleri", "Akıllı gösterge panelleri"]
+        },
+        {
+            title: "Yüz Tanıma ve Bilgisayarlı Görü",
+            description: "Python kullanarak kamera tabanlı akıllı sistemler geliştirme. Erişim kontrolü, katılım ve akıllı otomasyon için yüz algılama, tanıma ve izleme uygulama. Gerçek dünya dağıtımları için bilgisayarlı görüyü masaüstü/web uygulamaları ve donanım kontrol sistemleriyle entegre etme.",
+            tags: ["OpenCV", "Yüz Tanıma", "Python", "Kamera Kontrolü"],
+            icon: "Eye",
+            applications: ["Akıllı erişim kontrolü", "Otomatik yoklama", "Güvenlik sistemleri", "Görsel etkileşim kontrolü"]
+        }
+    ],
     methodology: [
         {
             title: "Çevik Geliştirme (Agile)",
@@ -130,6 +167,7 @@ export const tr: ResumeData = {
             highlights: "Öne Çıkanlar",
             projects: "Projeler",
             methodology: "Çalışma Metodolojisi",
+            aiCapabilities: "Yapay Zeka Yetenekleri",
             experience: "İş Deneyimi",
             education: "Eğitim",
             languages: "Diller",
